@@ -66,7 +66,8 @@ function cd_crt_hijack_page_for_data()
 			'end_date'		=> date( 'Y-m-d', strtotime('+1 day' ) ),
 			'limit'			=> 'all',
 			'bot'			=> isset( $_GET['bot'] ) && $_GET['bot'] ? $_GET['bot'] : 'any',
-			'uri'			=> isset( $_GET['uri'] ) && $_GET['uri'] ? $_GET['uri'] : false
+			'uri'			=> isset( $_GET['uri'] ) && $_GET['uri'] ? $_GET['uri'] : false,
+			'type'			=> isset( $_GET['type'] ) && $_GET['type'] ? $_GET['type'] : 'any'
 		)
 	);
 	
