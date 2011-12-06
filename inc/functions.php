@@ -1,6 +1,9 @@
 <?php
 /**
- * @todo make the functions in this file less shitty?
+ * Functions that make various things easier.
+ * 
+ * @package WordPress
+ * @subpackage Crawl Rate Tracker 2
  */
 
 function cd_crt_get_crawls( $args, $count = false )
@@ -109,7 +112,10 @@ function cd_crt_get_crawls( $args, $count = false )
 	{
 		$orderby = " ORDER BY crawl_date";
 	}
-	$orderby .= 'ASC' == $q['order'] ? ' ASC ' : ' DESC ';
+	$orderby .= 'asc' == strtolower( $q['order'] ) ? ' ASC ' : ' DESC ';
+	
+	// hack, secondary order by for time
+	$orderby .= ', crawl_time DESC ';
 	
 	$query = $query . $where . $orderby . $limit . $offset . ';';
 	
@@ -239,4 +245,66 @@ function cd_crt_get_bots_for_date( $date, $items, $to_db = false )
 		'msn'		=> $msn, 
 		'bing'		=> $bing 
 	);
+}
+
+/**
+ * Returns a translated string version of the object_type database field
+ * 
+ * @since 0.2
+ */
+function cd_crt_get_type_translated( $item )
+{
+	$labels = array(
+		'front'					=> __( 'Front Page', 'cdcrt' ),
+		'blog'					=> __( 'Blog Page', 'cdcrt' ),
+		'author'				=> __( 'Author Archive', 'cdcrt' ),
+		'post_type_archive'		=> __( 'Post Type Archive', 'cdcrt' ),
+		'archive'				=> __( 'Date Archive', 'cdcrt' ),
+		'error'					=> __( 'Error Page (404)', 'cdcrt' ),
+		'search'				=> __( 'Search Page', 'cdcrt' ),
+		'undefined'				=> __( 'Who Knows?', 'cdcrt' )
+	);
+	
+	if( isset( $labels[$item] ) )
+	{
+		return $labels[$item];
+	}
+	elseif( in_array( $item, get_post_types() ) )
+	{
+		$type = get_post_type_object( $item );
+		$label = isset( $type->label ) && $type->label ? $type->label : $item;
+		return sprintf( __( 'Singular: %s', 'cdcrt' ), $label );
+	}
+	elseif( in_array( $item, get_taxonomies() ) )
+	{
+		$tax = get_taxonomy( $item );
+		$label = isset( $tax->name ) ? $tax->label : $item;
+		return sprintf( __( 'Taxonomy Archive: %s', 'cdcrt' ), $label );
+	}
+	return '';
+}
+
+/**
+ * Return a translated string version of user_agent from the database
+ * 
+ * @since 0.2
+ */
+function cd_crt_get_bot_translated( $bot )
+{
+	switch( $bot )
+	{
+		case 'googlebot':
+			return __( 'Google', 'cdcrt' );
+			break;
+		case 'msnbot':
+			return __( 'MSN', 'cdcrt' );
+			break;
+		case 'yahoo':
+			return __( 'Yahoo!', 'cdcrt' );
+			break;
+		case 'bingbot':
+			return __( 'Bing', 'cdcrt' );
+			break;
+	}
+	return '';
 }

@@ -3,7 +3,7 @@
 Plugin Name: Crawl Rater Tracker 2
 Plugin URI: http://www.christopherguitar.net/
 Description: An updated, enhanced version of Crawl Rate Tracker.
-Version: 0.1
+Version: 0.2
 Author: Christopher Davis
 Author URI: http://pmg.co/people/chris
 License: GPL2
@@ -24,19 +24,27 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define( 'CDCRT_VERSION', '0.1' );
+define( 'CDCRT_VERSION', '0.2' );
 define( 'CDCRT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CDCRT_URL', plugin_dir_url( __FILE__ ) );
 define( 'CDCRT_NAME', plugin_basename( __FILE__ ) );
 
-require_once( CDCRT_PATH . 'inc/db-functions.php' );
+require_once( CDCRT_PATH . 'inc/functions.php' );
 if( is_admin() )
 {
 	require_once( CDCRT_PATH . 'inc/list-table.php' );
-	require_once( CDCRT_PATH . 'inc/admin-page.php' );
+	require_once( CDCRT_PATH . 'inc/admin.php' );
 }
 
 add_action( 'wp_footer', 'cd_crt_template_redirect' );
+/**
+ * Logs the bot visit
+ * 
+ * @since 0.1
+ * 
+ * @uses $wpdb->insert to insert the data
+ * @uses cd_crt_get_table to fetch the table name
+ */
 function cd_crt_template_redirect()
 {
 	$agent = $_SERVER['HTTP_USER_AGENT'] ? $_SERVER['HTTP_USER_AGENT'] : false;
@@ -45,6 +53,7 @@ function cd_crt_template_redirect()
 	if( preg_match( '/(googlebot|bingbot|yahoo|msnbot)/i', $agent, $matches ) )
 	{
 		$obj = get_queried_object();
+		print_r( $obj );
 		
 		$data = array();
 		
@@ -106,7 +115,31 @@ function cd_crt_template_redirect()
 	}
 }
 
+add_action( 'admin_bar_menu', 'cd_crt_add_admin_bar_item', 99 );
+/**
+ * Add a crawl rate link to the WP admin bar
+ * 
+ * @since 0.2
+ */
+function cd_crt_add_admin_bar_item( $wp_admin_bar )
+{
+	if( ! current_user_can( 'manage_options' ) ) return;
+	
+	$wp_admin_bar->add_menu(
+		array(
+			'id' 		=> 'cd-crt2',
+			'title'		=> __( 'Crawl Rate', 'cdcrt' ),
+			'href'		=> admin_url( 'index.php?page=crawl-rate-tracker2' )
+		)
+	);
+}
+
 register_activation_hook( __FILE__, 'pmg_crt2_activation' );
+/**
+ * Activation hook.  Create the table and updates a version option.
+ * 
+ * @since 0.1
+ */
 function pmg_crt2_activation()
 {
 	global $wpdb;

@@ -134,3 +134,15 @@ function cd_crt_hijack_page_for_data()
 
 	exit();
 }
+
+add_filter( 'plugin_action_links_' . CDCRT_NAME, 'cd_crt_plugin_actions' );
+/**
+ * Add a link to the plugin list table.
+ * 
+ * @since 0.2
+ */
+function cd_crt_plugin_actions( $actions )
+{
+	$actions['crawls'] = '<a href="' . admin_url( 'index.php?page=crawl-rate-tracker2' ) . '">' . __( 'View Crawls', 'cdcrt' ) . '</a>';
+	return $actions;
+}
