@@ -21,3 +21,4 @@ TODO
 	* ~~add time column~~
 8. Filter graph separately from table.
 9. Allow date range selection on graph.
+10. Add contextual help for the admin page

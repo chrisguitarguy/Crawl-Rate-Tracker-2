@@ -9,14 +9,26 @@ function cd_crt_crawl_rate_page()
 		'crawl-rate-tracker2',
 		'cd_crt_crawl_rate_page_cb'
 	);
+	
+	add_action( 'load-' . $page, 'cd_crt_load_admin_page' );
 }
 
-function cd_crt_crawl_rate_page_cb()
+/**
+ * Adds contextual help and hijacks WP if $_GET['data'] is true.  This is
+ * for the graphd display
+ * 
+ * @since 0.2
+ */
+function cd_crt_load_admin_page()
 {
 	if( isset( $_GET['data'] ) && 'true' == $_GET['data'] )
 	{
 		cd_crt_hijack_page_for_data();
 	}
+}
+
+function cd_crt_crawl_rate_page_cb()
+{
 	require_once( CDCRT_PATH . 'inc/open-flash-chart-display.php' );
 	?>
 	<div class="wrap">
@@ -28,7 +40,7 @@ function cd_crt_crawl_rate_page_cb()
 		<div class="chart" style="width:800px; margin: 0 auto;">
 		
 			<?php 
-				$charturl = admin_url( 'index.php?page=crawl-rate-tracker2&noheader=true&data=true' );
+				$charturl = admin_url( 'index.php?page=crawl-rate-tracker2&data=true' );
 				if( isset( $_GET['bot'] ) && $_GET['bot'] )
 				{
 					$charturl = add_query_arg( 'bot', $_GET['bot'], $charturl );
