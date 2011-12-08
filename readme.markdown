@@ -19,6 +19,7 @@ TODO
 	* ~~Type shoud also be translateable~~
 	* add column with specific object (view crawls for a single post, etc)
 	* ~~add time column~~
-8. Filter graph separately from table.
-9. Allow date range selection on graph.
+8. ~~Filter graph separately from table.~~
+9. ~~Allow date range selection on graph.~~
 10. Add contextual help for the admin page
+11. Maybe only allow the chart to be filtered date wise?
