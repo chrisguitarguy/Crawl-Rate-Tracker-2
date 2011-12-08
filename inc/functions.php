@@ -23,11 +23,13 @@ function cd_crt_get_crawls( $args, $count = false )
 			'type'			=> 'any',
 			'uri'			=> false,
 			'orderby'		=> 'crawl_date',
-			'order'			=> 'DESC'
+			'order'			=> 'DESC',
+			'blog_id'		=> $blog_id,
+			'object_id'		=> false
 		)
 	);
 	
-	$query = $wpdb->prepare( " FROM {$table} WHERE blog_id = %s", $blog_id );
+	$query = " FROM {$table} WHERE ";
 	if( in_array( $q['bot'], array( 'msnbot', 'bingbot', 'googlebot', 'yahoo' ) ) )
 	{
 		$bot = $wpdb->prepare( "user_agent = %s", $q['bot'] );
@@ -57,14 +59,33 @@ function cd_crt_get_crawls( $args, $count = false )
 	
 	if( $q['start_date'] )
 	{
-		$date = $wpdb->prepare( " crawl_date BETWEEN %s AND %s", $q['start_date'], $q['end_date'] );
+		$date = $wpdb->prepare( "crawl_date BETWEEN %s AND %s", $q['start_date'], $q['end_date'] );
 	}
 	else
 	{
 		$date = '';
 	}
 	
-	$where = '';
+	if( isset( $q['object_id'] ) && $q['object_id'] )
+	{
+		$oid = $wpdb->prepare( "object_id = %s", $q['object_id'] );
+	}
+	else
+	{
+		$oid = '';
+	}
+	
+	if( function_exists( 'is_multisite' ) && is_multisite() && is_network_admin() )
+	{
+		$bid = $q['blog_id'];
+	}
+	else
+	{
+		$bid = $blog_id;
+	}
+
+	
+	$where = $wpdb->prepare( " blog_id = %s", $bid );
 	if( $bot )
 	{
 		$where .= ' AND ' . $bot;
@@ -79,7 +100,11 @@ function cd_crt_get_crawls( $args, $count = false )
 	}
 	if( $date )
 	{
-		$where .= 'AND '. $date;
+		$where .= 'AND ' . $date;
+	}
+	if( $oid )
+	{
+		$where .= 'AND ' . $oid;
 	}
 	
 	if( 'all' == $q['limit'] )

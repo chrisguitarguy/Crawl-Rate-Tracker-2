@@ -1026,7 +1026,7 @@ class CD_Crawl_Rate_Graph
 		
 		//echo headers_sent() ?'yes':'no';
 		if( !headers_sent() )
-			header('content-type: text; charset: utf-8');
+			header('content-type: text/plain; charset: utf-8');
 
 		if($this->output_type == 'js')
 		{

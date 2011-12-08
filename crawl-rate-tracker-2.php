@@ -34,6 +34,10 @@ if( is_admin() )
 {
 	require_once( CDCRT_PATH . 'inc/list-table.php' );
 	require_once( CDCRT_PATH . 'inc/admin.php' );
+	if( defined( 'DOING_AJAX' ) && DOING_AJAX )
+	{
+		require_once( CDCRT_PATH . 'inc/ajax.php' );
+	}
 }
 
 add_action( 'wp_footer', 'cd_crt_template_redirect' );
@@ -53,7 +57,6 @@ function cd_crt_template_redirect()
 	if( preg_match( '/(googlebot|bingbot|yahoo|msnbot)/i', $agent, $matches ) )
 	{
 		$obj = get_queried_object();
-		print_r( $obj );
 		
 		$data = array();
 		

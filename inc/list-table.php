@@ -78,9 +78,10 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	function extra_tablenav( $which )
 	{
 		$filters = array( 
-			'bot' => __( 'Search Bot = %s', 'cdcrt' ),
-			'uri' => __( 'URL = %s', 'cdcrt' ),
-			'type' => __( 'Type = %s', 'cdcrt' )
+			'bot' 		=> __( ' Search Bot = %s', 'cdcrt' ),
+			'uri'		=> __( ' URL = %s', 'cdcrt' ),
+			'type' 		=> __( ' Type = %s', 'cdcrt' ),
+			'object_id'	=> __( ' Object ID = %s', 'cdcrt' )
 		);
 		$current_filter = '';
 		foreach( array_keys( $filters ) as $f )
@@ -118,7 +119,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 				echo '<p class="description">';
 				if( $current_filter )
 				{
-					_e( 'Current Filter: ', 'cdcrt' );
+					_e( 'Current Filter:', 'cdcrt' );
 					echo esc_html( $current_filter ) . '. ';
 				}
 				if( $current_order )
@@ -143,6 +144,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 			'bot'	=> __( 'Bot', 'cdcrt' ),
 			'uri'	=> __( 'URL', 'cdcrt' ),
 			'type'	=> __( 'Type', 'cdcrt' ),
+			'page'	=> __( 'Page', 'cdcrt' ),
 			'date'	=> __( 'Date', 'cdcrt' ),
 			'time'	=> __( 'Time', 'cdcrt' )
 		);
@@ -203,6 +205,43 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 			cd_crt_get_type_translated( $item->object_type )
 		);
 		return $link;
+	}
+	
+	/**
+	 * Controls the output of the page column
+	 * 
+	 * @since 0.2;
+	 */
+	function column_page( $item )
+	{
+		$link = false;
+		$label = '';
+		if( in_array( $item->object_type, get_post_types() ) )
+		{
+			$link = add_query_arg( 'type', $item->object_type, $this->current_url );
+			$link = add_query_arg( 'object_id', $item->object_id, $link );
+			$label = get_the_title( $item->object_id );
+		}
+		elseif( in_array( $item->object_type, get_taxonomies() ) )
+		{
+			$link = add_query_arg( 'type', $item->object_type, $this->current_url );
+			$link = add_query_arg( 'object_id', $item->object_id, $link );
+			$term = get_term( $item->object_id, $item->object_type );
+			$label =  $term->name;
+		}
+		else
+		{
+			$label = __( 'n/a', 'cdcrt' );
+		}
+		
+		if( $link )
+		{
+			return sprintf( '<a href="%s">%s</a>', $link, $label );
+		}
+		else
+		{
+			return $label;
+		}
 	}
 	
 	/**
