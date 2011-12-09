@@ -42,7 +42,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 		
 		$q = $_REQUEST;
 		
-		$q['limit'] = 'all';
+		$q['limit'] = 1000;
 		
 		$page = $this->get_pagenum();
 		if( 1 != $page )
@@ -229,6 +229,12 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 			$term = get_term( $item->object_id, $item->object_type );
 			$label =  $term->name;
 		}
+		elseif( 'author' == $item->object_type )
+		{
+			$user = get_user_by( 'id', $item->object_id );
+			$link = add_query_arg( 'object_id', $item->object_id, $link );
+			$label = $user->display_name;
+		}
 		else
 		{
 			$label = __( 'n/a', 'cdcrt' );
@@ -236,7 +242,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 		
 		if( $link )
 		{
-			return sprintf( '<a href="%s">%s</a>', $link, $label );
+			return sprintf( '<a href="%s">%s</a>', esc_url( $link ), esc_html( $label ) );
 		}
 		else
 		{

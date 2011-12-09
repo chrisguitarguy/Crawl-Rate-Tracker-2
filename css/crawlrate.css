@@ -7,6 +7,7 @@ div#crt-chart-container {
 div#cd-crt-chart-controller {
 	width:800px;
 	margin:20px auto;
+	text-align:center;
 }
 
 div#cd-crt-chart-controller input[type=text] {

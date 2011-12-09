@@ -24,12 +24,12 @@ function cd_crt_get_crawls( $args, $count = false )
 			'uri'			=> false,
 			'orderby'		=> 'crawl_date',
 			'order'			=> 'DESC',
-			'blog_id'		=> $blog_id,
+			'blog_id'		=> false,
 			'object_id'		=> false
 		)
 	);
 	
-	$query = " FROM {$table} WHERE ";
+	$query = " FROM {$table}";
 	if( in_array( $q['bot'], array( 'msnbot', 'bingbot', 'googlebot', 'yahoo' ) ) )
 	{
 		$bot = $wpdb->prepare( "user_agent = %s", $q['bot'] );
@@ -77,34 +77,67 @@ function cd_crt_get_crawls( $args, $count = false )
 	
 	if( function_exists( 'is_multisite' ) && is_multisite() && is_network_admin() )
 	{
-		$bid = $q['blog_id'];
+		if( isset( $q['blog_id'] ) && $q['blog_id'] )
+		{
+			$where = $wpdb->prepare( " WHERE blog_id = %d", $q['blog_id'] );
+		}
+		else
+		{
+			$where = "";
+		}
 	}
 	else
 	{
-		$bid = $blog_id;
+		$where = $wpdb->prepare( " WHERE blog_id = %d", absint( $blog_id ) );
 	}
 
-	
-	$where = $wpdb->prepare( " blog_id = %s", $bid );
 	if( $bot )
 	{
-		$where .= ' AND ' . $bot;
+		if( $where )
+		{
+			$where .= ' AND ' . $bot;
+		}
+		else
+		{
+			$where = ' WHERE ' . $bot;
+		}
 	}
 	if( $type )
 	{
-		$where .= ' AND ' . $type;
+		if( $where )
+		{
+			$where .= ' AND ' . $type;
+		}
+		else
+		{
+			$where .= ' WHERE ' . $type;
+		}
 	}
 	if( $uri )
 	{
-		$where .= ' AND ' . $uri;
+		if( $where )
+		{
+			$where .= ' AND ' . $uri;
+		}
+		else
+		{
+			$where .= ' WHERE ' . $uri;
+		}
 	}
 	if( $date )
 	{
-		$where .= 'AND ' . $date;
+		$where .= ' AND ' . $date;
 	}
 	if( $oid )
 	{
-		$where .= 'AND ' . $oid;
+		if( $where )
+		{
+			$where .= 'AND ' . $oid;
+		}
+		else
+		{
+			$where .= ' WHERE ' . $oid;
+		}
 	}
 	
 	if( 'all' == $q['limit'] )

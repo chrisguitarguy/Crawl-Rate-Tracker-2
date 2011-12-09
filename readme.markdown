@@ -17,7 +17,7 @@ TODO
 7. Better presentation in list table
 	* ~~Bot should be a translatable string~~
 	* ~~Type shoud also be translateable~~
-	* add column with specific object (view crawls for a single post, etc)
+	* ~~add column with specific object (view crawls for a single post, etc)~~
 	* ~~add time column~~
 8. ~~Filter graph separately from table.~~
 9. ~~Allow date range selection on graph.~~

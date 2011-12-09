@@ -33,6 +33,7 @@ require_once( CDCRT_PATH . 'inc/functions.php' );
 if( is_admin() )
 {
 	require_once( CDCRT_PATH . 'inc/list-table.php' );
+	require_once( CDCRT_PATH . 'inc/network-list-table.php' );
 	require_once( CDCRT_PATH . 'inc/admin.php' );
 	if( defined( 'DOING_AJAX' ) && DOING_AJAX )
 	{
@@ -40,7 +41,7 @@ if( is_admin() )
 	}
 }
 
-add_action( 'wp_footer', 'cd_crt_template_redirect' );
+add_action( 'shutdown', 'cd_crt_template_redirect' );
 /**
  * Logs the bot visit
  * 

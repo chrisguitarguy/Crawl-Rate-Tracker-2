@@ -1,12 +1,10 @@
 jQuery(document).ready(function(){
+	//jQuery('.wrap h2').html(window.location.search);
 	jQuery('a#crt-reload-graph').click(function(e){
 		var data = {
-			'action': 'cd_crt_build_new_graph'
+			'action': 'cd_crt_build_new_graph',
+			'url': window.location.search
 		}
-		if( bot = jQuery('select#cd-crt-select-bot').val() )
-			data.bot = bot;
-		if( type = jQuery('select#cd-crt-select-type').val() )
-			data.type = type;
 		if( start_date = jQuery('input#cd-crt-start-date').val() )
 			data.start_date = start_date;
 		if( end_date = jQuery('input#cd-crt-end-date').val() )

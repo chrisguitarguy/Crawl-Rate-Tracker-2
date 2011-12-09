@@ -1,5 +1,6 @@
 <?php
 add_action( 'admin_menu', 'cd_crt_crawl_rate_page' );
+add_action( 'network_admin_menu', 'cd_crt_crawl_rate_page' );
 function cd_crt_crawl_rate_page()
 {
 	$page = add_dashboard_page(
@@ -12,7 +13,7 @@ function cd_crt_crawl_rate_page()
 	
 	add_action( 'load-' . $page, 'cd_crt_load_admin_page' );
 	add_action( 'admin_print_scripts-' . $page, 'cd_crt_enqueue_scripts' );
-	add_action( 'admin_print_scripts-' . $page, 'cd_crt_enqueue_styles' );
+	add_action( 'admin_print_styles-' . $page, 'cd_crt_enqueue_styles' );
 }
 
 /**
@@ -103,32 +104,12 @@ function cd_crt_crawl_rate_page_cb()
 			
 			<div id="cd-crt-chart-controller">
 				
-				<h3><?php _e( 'Chart Filter', 'cdcrt' ); ?></h3>
-				
-				<select name="cd-crt-select-bot" id="cd-crt-select-bot">
-					<option value=""><?php _e( 'Select a Bot', 'cdcrt' ); ?></option>
-					<?php foreach( array( 'googlebot', 'msnbot', 'yahoo', 'bingbot' ) as $b ): ?>
-						<option value="<?php echo $b; ?>"><?php echo cd_crt_get_bot_translated( $b ); ?></option>
-					<?php endforeach; ?>
-				</select>
-				
-				<?php
-				$table = cd_crt_get_table();
-				$types = $wpdb->get_results( "SELECT DISTINCT object_type FROM {$table};", OBJECT_K);
-				if( $types ):
-				?>
-					<select id="cd-crt-select-type" name="cd-crt-select-type">
-						<option value=""><?php _e( 'Select a Type', 'cdcrt' ); ?></option>
-						<?php foreach( array_keys( $types ) as $type ): ?>
-							<option value="<?php echo esc_attr( $type ); ?>"><?php echo cd_crt_get_type_translated( $type ); ?></option>
-						<?php endforeach; ?>
-					</select>
-				<?php endif; ?>
+				<h3><?php _e( 'Chart Date Filter', 'cdcrt' ); ?></h3>
 				
 				<label for="cd-crt-start-date"><?php _e( 'Start Date', 'cdcrt' ); ?></label>
 				<input type="text" id="cd-crt-start-date" name="cd-crt-start-date" />
 				
-				<label for="cd-crt-end-date"><?php _e( 'Start Date', 'cdcrt' ); ?></label>
+				<label for="cd-crt-end-date"><?php _e( 'End Date', 'cdcrt' ); ?></label>
 				<input type="text" id="cd-crt-end-date" name="cd-crt-end-date" />
 				
 				<a href="javascript:void(null);" id="crt-reload-graph" class="button-secondary"><?php _e( 'Filter', 'cdcrt' ); ?></a>
@@ -140,7 +121,8 @@ function cd_crt_crawl_rate_page_cb()
 		
 		<br clear="both" />
 		<?php
-			$list = new CD_Crawl_Rate_List_Table();
+			
+			$list = is_network_admin() ? new CD_Network_Crawl_Rate_List_Table() : new CD_Crawl_Rate_List_Table();
 			$list->prepare_items();
 			$list->display();
 		?>
