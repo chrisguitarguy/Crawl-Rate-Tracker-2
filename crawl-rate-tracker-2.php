@@ -35,13 +35,14 @@ if( is_admin() )
 	require_once( CDCRT_PATH . 'inc/list-table.php' );
 	require_once( CDCRT_PATH . 'inc/network-list-table.php' );
 	require_once( CDCRT_PATH . 'inc/admin.php' );
+	require_once( CDCRT_PATH . 'inc/help.php' );
 	if( defined( 'DOING_AJAX' ) && DOING_AJAX )
 	{
 		require_once( CDCRT_PATH . 'inc/ajax.php' );
 	}
 }
 
-add_action( 'shutdown', 'cd_crt_template_redirect' );
+add_action( 'shutdown', 'cd_crt_count_bot' );
 /**
  * Logs the bot visit
  * 
@@ -50,7 +51,7 @@ add_action( 'shutdown', 'cd_crt_template_redirect' );
  * @uses $wpdb->insert to insert the data
  * @uses cd_crt_get_table to fetch the table name
  */
-function cd_crt_template_redirect()
+function cd_crt_count_bot()
 {
 	$agent = $_SERVER['HTTP_USER_AGENT'] ? $_SERVER['HTTP_USER_AGENT'] : false;
 	
@@ -62,6 +63,7 @@ function cd_crt_template_redirect()
 		$data = array();
 		
 		global $blog_id;
+
 		$data['blog_id'] = absint( $blog_id );
 		
 		$data['object_id'] = get_queried_object_id() ? get_queried_object_id() : 0;

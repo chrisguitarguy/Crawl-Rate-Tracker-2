@@ -28,6 +28,23 @@ function cd_crt_load_admin_page()
 	{
 		cd_crt_hijack_page_for_data();
 	}
+	
+	$screen = get_current_screen();
+	$screen->add_help_tab(
+		array(
+			'id'		=> 'crawl-rate-main-help',
+			'title'		=> __( 'About Crawl Rate 2', 'cdcrt' ),
+			'callback'	=> 'cd_crt_contextual_help_main'
+		)
+	);
+	$screen->add_help_tab(
+		array(
+			'id'		=> 'crawl-rate-how-it-works', 
+			'title'		=> __( 'How it Works', 'cdcrt' ),
+			'callback'	=> 'cd_crt_contextual_help_how'
+		)
+	);
+	$screen->set_help_sidebar( cd_crt_contextual_help_sidebar() );
 }
 
 /**
@@ -46,6 +63,11 @@ function cd_crt_enqueue_scripts()
 	);
 }
 
+/**
+ * Enqueue the CSS files for our admin page
+ * 
+ * @since 0.2
+ */
 function cd_crt_enqueue_styles()
 {
 	wp_enqueue_style(
@@ -158,7 +180,8 @@ function cd_crt_hijack_page_for_data()
 			'limit'			=> 'all',
 			'bot'			=> isset( $_GET['bot'] ) && $_GET['bot'] ? $_GET['bot'] : 'any',
 			'uri'			=> isset( $_GET['uri'] ) && $_GET['uri'] ? $_GET['uri'] : false,
-			'type'			=> isset( $_GET['type'] ) && $_GET['type'] ? $_GET['type'] : 'any'
+			'type'			=> isset( $_GET['type'] ) && $_GET['type'] ? $_GET['type'] : 'any',
+			'object_id'		=> isset( $_GET['object_id'] ) && $_GET['object_id'] ? $_GET['object_id'] : false
 		)
 	);
 	

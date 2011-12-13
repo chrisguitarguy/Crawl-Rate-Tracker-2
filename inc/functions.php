@@ -68,7 +68,7 @@ function cd_crt_get_crawls( $args, $count = false )
 	
 	if( isset( $q['object_id'] ) && $q['object_id'] )
 	{
-		$oid = $wpdb->prepare( "object_id = %s", $q['object_id'] );
+		$oid = $wpdb->prepare( "object_id = %d", $q['object_id'] );
 	}
 	else
 	{
@@ -132,7 +132,7 @@ function cd_crt_get_crawls( $args, $count = false )
 	{
 		if( $where )
 		{
-			$where .= 'AND ' . $oid;
+			$where .= ' AND ' . $oid;
 		}
 		else
 		{
