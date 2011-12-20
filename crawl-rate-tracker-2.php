@@ -24,14 +24,16 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define( 'CDCRT_VERSION', '0.2' );
+define( 'CDCRT_VERSION', '0.1' );
 define( 'CDCRT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CDCRT_URL', plugin_dir_url( __FILE__ ) );
 define( 'CDCRT_NAME', plugin_basename( __FILE__ ) );
+define( 'CDCRT_FOLDER', basename( CDCRT_PATH ) ); // for github updating
 
 require_once( CDCRT_PATH . 'inc/functions.php' );
 if( is_admin() )
 {
+	require_once( CDCRT_PATH . 'inc/github-updater.php' );
 	require_once( CDCRT_PATH . 'inc/list-table.php' );
 	require_once( CDCRT_PATH . 'inc/network-list-table.php' );
 	require_once( CDCRT_PATH . 'inc/admin.php' );
