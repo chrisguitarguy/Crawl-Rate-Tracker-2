@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Update Crawl Rate 2 from Github!
+ * 
+ * Props to Joachim Kudish for the ideas:
+ * https://github.com/jkudish/WordPress-GitHub-Plugin-Updater
+ */
 class CD_Crawl_Rate_Github_Updater
 {
 	function __construct()
@@ -13,8 +18,9 @@ class CD_Crawl_Rate_Github_Updater
 		
 		add_action( 'init', array( &$this, 'setup_data' ) );
 		
-		add_filter( 'pre_set_site_transient_update_plugins', array( &$this, 'hijack_transient' ) );
+		add_filter( 'site_transient_update_plugins', array( &$this, 'hijack_transient' ) );
 		add_filter( 'plugins_api', array( &$this, 'hijack_api' ), 10, 3 );
+		add_filter( 'upgrader_post_install', array( &$this, 'post_install' ), 10, 3 );
 	}
 	
 	
@@ -26,6 +32,7 @@ class CD_Crawl_Rate_Github_Updater
 	function setup_data()
 	{
 		if( WP_DEBUG ) $this->delete_stuff();
+		
 		if( $tags = get_site_transient( 'cdcrt_github_tags' ) )
 		{
 			$this->compare_tags( $tags );
@@ -43,6 +50,10 @@ class CD_Crawl_Rate_Github_Updater
 	}
 	
 	
+	/**
+	 * Filter the update_plugins transient to include our plugin if
+	 * necessary.
+	 */
 	function hijack_transient( $value )
 	{
 		
@@ -83,6 +94,29 @@ class CD_Crawl_Rate_Github_Updater
 			'description' => $data['Description']
 		);
 		return $r;
+	}
+	
+	
+	/**
+	 * Github sends a folder name with a super weird name.  We'll move it 
+	 * to the real folder name
+	 */
+	function post_install( $true, $hook_extra, $result )
+	{
+		global $wp_filesystem;
+		$proper_destination = trailingslashit( WP_PLUGIN_DIR ) . CDCRT_FOLDER;
+		$wp_filesystem->move( $result['destination'], $proper_destination) ;
+		$result['destination'] = $proper_destination;
+		$activate = activate_plugin( trailingslashit( WP_PLUGIN_DIR ) . CDCRT_NAME );
+		if (is_wp_error($activate)) 
+		{
+			_e( 'The plugin was updated, but could not be reactivated.', 'cdcrt' );
+		} 
+		else 
+		{
+			_e( 'Plugin reactivated successfully', 'cdcrt' );
+		}
+		return $result;
 	}
 	
 	

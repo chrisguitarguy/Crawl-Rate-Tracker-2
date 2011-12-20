@@ -24,7 +24,7 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define( 'CDCRT_VERSION', '0.1' );
+define( 'CDCRT_VERSION', '0.3' );
 define( 'CDCRT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CDCRT_URL', plugin_dir_url( __FILE__ ) );
 define( 'CDCRT_NAME', plugin_basename( __FILE__ ) );
