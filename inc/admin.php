@@ -181,7 +181,8 @@ function cd_crt_hijack_page_for_data()
 			'bot'			=> isset( $_GET['bot'] ) && $_GET['bot'] ? $_GET['bot'] : 'any',
 			'uri'			=> isset( $_GET['uri'] ) && $_GET['uri'] ? $_GET['uri'] : false,
 			'type'			=> isset( $_GET['type'] ) && $_GET['type'] ? $_GET['type'] : 'any',
-			'object_id'		=> isset( $_GET['object_id'] ) && $_GET['object_id'] ? $_GET['object_id'] : false
+			'object_id'		=> isset( $_GET['object_id'] ) && $_GET['object_id'] ? $_GET['object_id'] : false,
+            'blog_id'       => isset( $_GET['blog_id'] ) && $_GET['blog_id'] ? $_GET['blog_id'] : false
 		)
 	);
 	
