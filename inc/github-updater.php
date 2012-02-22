@@ -108,7 +108,7 @@ class CD_Crawl_Rate_Github_Updater
 		$wp_filesystem->move( $result['destination'], $proper_destination) ;
 		$result['destination'] = $proper_destination;
 		$activate = activate_plugin( trailingslashit( WP_PLUGIN_DIR ) . CDCRT_NAME );
-		if ( is_wp_error($activate) ) 
+		if ( is_wp_error( $activate ) ) 
 		{
 			_e( 'The plugin was updated, but could not be reactivated.', 'cdcrt' );
 		} 
