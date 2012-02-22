@@ -229,7 +229,7 @@ function cd_crt_get_count_for_date( $date, $data = array(), $to_db = false )
 			$count += 1;
 		}
 	}
-	return $count;
+	return absint( $count );
 }
 
 function cd_crt_get_bots_for_date( $date, $items, $to_db = false )

@@ -6,49 +6,64 @@
  * @subpackage Crawl Rate Tracker 2
  */
 
-add_action( 'wp_ajax_cd_crt_build_new_graph', 'cd_crt_ajax_build_graph' );
-function cd_crt_ajax_build_graph()
+add_action( 'wp_ajax_cd_crt_fetch_data', 'cd_crt_ajax_fetch_data' );
+function cd_crt_ajax_fetch_data()
 {
-	require_once( CDCRT_PATH . 'inc/open-flash-chart-display.php' );
-	
-	if( isset( $_REQUEST['url'] ) && $_REQUEST['url'] )
+	if( isset( $_POST['start_date'] ) && $_POST['start_date'] )
 	{
-		$url = trim( $_REQUEST['url'], '?' );
-		$url = explode( '&', $url );
-		$urlarr = array();
-		foreach( $url as $u )
-		{
-			$temp = explode( '=', $u );
-			$urlarr[$temp[0]] = $temp[1];
-		}
-		$urlarr['data'] = 'true';
-		$charturl = add_query_arg( $urlarr, admin_url( 'index.php?page=crawl-rate-tracker2' ) );
+		$start_date = date('Y-m-d', strtotime( $_POST['start_date'] ) );
 	}
 	else
 	{
-		$charturl = admin_url( 'index.php?page=crawl-rate-tracker2&data=true' );
+		$start_date = date( 'Y-m-d', strtotime('-30 days' ) );
 	}
+    
+	if( isset( $_POST['end_date'] ) && $_POST['end_date'] )
+	{
+		$end_date = date( 'Y-m-d', strtotime( $_POST['end_date'] ) );
+	}
+	else 
+	{
+		$end_date = date( 'Y-m-d');
+	}
+    
+    $crawls = cd_crt_get_crawls(
+		array(
+			'start_date'	=> $start_date,
+			'end_date'		=> $end_date,
+			'limit'			=> 'all',
+			'bot'			=> isset( $_POST['bot'] ) && $_POST['bot'] ? $_POST['bot'] : 'any',
+			'uri'			=> isset( $_POST['uri'] ) && $_POST['uri'] ? $_POST['uri'] : false,
+			'type'			=> isset( $_POST['type'] ) && $_POST['type'] ? $_POST['type'] : 'any',
+			'object_id'		=> isset( $_POST['object_id'] ) && $_POST['object_id'] ? $_POST['object_id'] : false,
+            'blog_id'       => isset( $_POST['blog_id'] ) && $_POST['blog_id'] ? $_POST['blog_id'] : false
+		)
+	);
 	
-	if( isset( $_REQUEST['bot'] ) && $_REQUEST['bot'] )
+	$range = cd_crt_make_date_rage( $start_date, $end_date, true );
+    
+    $data = array();
+	$bing = array();
+	$msn = array();
+	$yahoo = array();
+	$google = array();
+	foreach( $range as $date )
 	{
-		$charturl = add_query_arg( 'bot', $_REQUEST['bot'], $charturl );
+		$data[] = cd_crt_get_count_for_date( $date, $crawls );
+		$temp = cd_crt_get_bots_for_date( $date, $crawls );
+		$bing[] = $temp['bing'];
+		$msn[] = $temp['msn'];
+		$yahoo[] = $temp['yahoo'];
+		$google[] = $temp['google'];
 	}
-	if( isset( $_REQUEST['uri'] ) && $_REQUEST['uri'] )
-	{
-		$charturl = add_query_arg( 'uri', $_REQUEST['uri'], $charturl );
-	}
-	if( isset( $_REQUEST['type'] ) && $_REQUEST['type'] )
-	{
-		$charturl = add_query_arg( 'type', $_REQUEST['type'], $charturl );
-	}
-	if( isset( $_REQUEST['start_date'] ) && $_REQUEST['start_date'] )
-	{
-		$charturl = add_query_arg( 'start_date', $_REQUEST['start_date'], $charturl );
-	}
-	if( isset( $_REQUEST['end_date'] ) && $_REQUEST['end_date'] )
-	{
-		$charturl = add_query_arg( 'end_date', $_REQUEST['end_date'], $charturl );
-	}
-	open_flash_chart_object( 800, 500, $charturl, true, CDCRT_URL ); 
-	die();
+    
+    echo json_encode( array(
+        'dates'     => $range,
+        'totals'    => $data,
+        'bing'      => $bing,
+        'google'    => $google,
+        'yahoo'     => $yahoo,
+        'msn'       => $msn
+    ) );
+    die();
 }

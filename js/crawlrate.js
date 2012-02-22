@@ -1,25 +1,51 @@
+function cd_crt_fetch_data(args) {
+    var a = typeof(args) != 'undefined' ? args : {};
+    a.action = 'cd_crt_fetch_data';
+    var rv = false;
+    jQuery.post(
+        ajaxurl, a,
+        function(resp) {
+            rv = jQuery.parseJSON(resp);
+            jQuery('#crt-chart-container').html('');
+            cd_crt_build_chart(rv);
+        }
+    );
+    return rv;
+}
+
+function cd_crt_build_chart(data) {
+    new Ico.LineGraph(
+        'crt-chart-container',
+        [
+            data.totals,
+            data.google,
+            data.bing,
+            data.yahoo,
+            data.msn
+        ],
+        {
+            colors: ['#FF0000', '#1111CC', '#F76120', '#7B0099', '#009AD9'],
+            x_padding_right: 60,
+            labels: {values: data.dates, angle: 90},
+            grid: true,
+            units: ' Crawls',
+            status_bar: true
+        }
+    );
+}
+
 jQuery(document).ready(function(){
-	//jQuery('.wrap h2').html(window.location.search);
 	jQuery('a#crt-reload-graph').click(function(e){
-		var data = {
-			'action': 'cd_crt_build_new_graph',
-			'url': window.location.search
-		}
+        data = {};
 		if( start_date = jQuery('input#cd-crt-start-date').val() )
 			data.start_date = start_date;
 		if( end_date = jQuery('input#cd-crt-end-date').val() )
 			data.end_date = end_date;
 		
-		jQuery(this).append(userSettings.ajaxurl);
-		jQuery.post(
-			ajaxurl,
-			data,
-			function(data){
-				jQuery('div#crt-chart-container').html(data);
-			}
-		);
+		cd_crt_fetch_data(data);
 		e.preventDefault();
 	});
 	jQuery('input#cd-crt-start-date').datepicker({dateFormat: 'yy-mm-dd'});
 	jQuery('input#cd-crt-end-date').datepicker({dateFormat: 'yy-mm-dd'});
+    cd_crt_fetch_data();
 });

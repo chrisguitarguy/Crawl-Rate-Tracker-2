@@ -7,6 +7,8 @@
  */
 class CD_Crawl_Rate_Github_Updater
 {
+    var $new_version = false;
+    
 	function __construct()
 	{
 		$this->config = array(
