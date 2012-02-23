@@ -77,7 +77,8 @@ function cd_crt_enqueue_scripts()
         'crawlratejs',
         'crawlrate_data',
         array(
-            'loader'    => CDCRT_URL . 'images/loader.gif'
+            'loader'    => CDCRT_URL . 'images/loader.gif',
+            'nonce'     => wp_create_nonce( 'cd_crt_ajax_nonce' )
         )
     );
 }

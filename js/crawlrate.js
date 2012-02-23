@@ -2,14 +2,22 @@ function cd_crt_show_loader() {
     jQuery('#crt-chart-container').html('<div class="cd-crt-loader"><img src="' + crawlrate_data.loader + '" /></div>');
 }
 
+function cd_crt_show_error() {
+    jQuery('#crt-chart-container').html('<div class="cd-crt-loader"><p>Something terrible happened. Reload this page to try again.</p></div>');
+}
 
 function cd_crt_fetch_data(args) {
     var a = typeof(args) != 'undefined' ? args : {};
     a.action = 'cd_crt_fetch_data';
+    a.crt_nonce = crawlrate_data.nonce;
     var rv = false;
     jQuery.post(
         ajaxurl, a,
         function(resp) {
+            if('-1' == resp) {
+                cd_crt_show_error();
+                return;
+            }
             rv = jQuery.parseJSON(resp);
             jQuery('#crt-chart-container').html('');
             cd_crt_build_chart(rv);
