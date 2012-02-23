@@ -232,77 +232,25 @@ function cd_crt_get_count_for_date( $date, $data = array(), $to_db = false )
 	return absint( $count );
 }
 
-function cd_crt_get_bots_for_date( $date, $items, $to_db = false )
+function cd_crt_extract_crawls( $result_row )
 {
-	if( $to_db )
-	{
-		global $wpdb;
-		$bing = $wpdb->get_var(
-			$wpdb->pepare(
-				"SELECT count(*) WHERE crawl_date = %s AND user_agent = %s", 
-				$date,
-				'bingbot'
-			)
-		);
-		$goog = $wpdb->get_var(
-			$wpdb->pepare(
-				"SELECT count(*) WHERE crawl_date = %s AND user_agent = %s", 
-				$date,
-				'googlebot'
-			)
-		);
-		$yahoo = $wpdb->get_var(
-			$wpdb->pepare(
-				"SELECT count(*) WHERE crawl_date = %s AND user_agent = %s", 
-				$date,
-				'yahoo'
-			)
-		);
-		$msn = $wpdb->get_var(
-			$wpdb->pepare(
-				"SELECT count(*) WHERE crawl_date = %s AND user_agent = %s", 
-				$date,
-				'msnbot'
-			)
-		);
-		
-		return array( 
-			'google'	=> $goog, 
-			'yahoo'		=> $yahoo, 
-			'msn'		=> $msn, 
-			'bing'		=> $bing 
-		);
-	}
-	
-	$msn = 0;
-	$goog = 0;
-	$yahoo = 0;
-	$bing = 0;
-	foreach( $items as $item )
-	{
-		if( $item->crawl_date != $date ) continue;
-		switch( $item->user_agent )
-		{
-			case 'googlebot':
-				$goog += 1;
-				break;
-			case 'msnbot':
-				$msn += 1;
-				break;
-			case 'bingbot':
-				$bing += 1;
-				break;
-			case 'yahoo':
-				$yahoo += 1;
-				break;
-		}
-	}
-	return array( 
-		'google'	=> $goog, 
-		'yahoo'		=> $yahoo, 
-		'msn'		=> $msn, 
-		'bing'		=> $bing 
-	);
+    return $result_row->crawl_count;
+}
+
+
+function cd_crt_get_count_for_bot( $start_date, $end_date, $bot = False )
+{
+    global $wpdb;
+    $table = cd_crt_get_table();
+    $query = "SELECT crawl_date, count(*) as crawl_count from {$table}";
+    $query .= $wpdb->prepare( ' WHERE crawl_date BETWEEN %s AND %s', $start_date, $end_date );
+    if( $bot ) 
+    {
+        $query .= $wpdb->prepare( ' AND user_agent = %s', $bot );
+    }
+    $query .= ' GROUP BY crawl_date ORDER BY crawl_date ASC;';
+    $result = $wpdb->get_results( $query );
+    return array_map( 'cd_crt_extract_crawls', $result );
 }
 
 /**

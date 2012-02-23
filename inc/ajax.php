@@ -26,44 +26,15 @@ function cd_crt_ajax_fetch_data()
 	{
 		$end_date = date( 'Y-m-d');
 	}
-    
-    $crawls = cd_crt_get_crawls(
-		array(
-			'start_date'	=> $start_date,
-			'end_date'		=> $end_date,
-			'limit'			=> 'all',
-			'bot'			=> isset( $_POST['bot'] ) && $_POST['bot'] ? $_POST['bot'] : 'any',
-			'uri'			=> isset( $_POST['uri'] ) && $_POST['uri'] ? $_POST['uri'] : false,
-			'type'			=> isset( $_POST['type'] ) && $_POST['type'] ? $_POST['type'] : 'any',
-			'object_id'		=> isset( $_POST['object_id'] ) && $_POST['object_id'] ? $_POST['object_id'] : false,
-            'blog_id'       => isset( $_POST['blog_id'] ) && $_POST['blog_id'] ? $_POST['blog_id'] : false
-		)
-	);
 	
 	$range = cd_crt_make_date_rage( $start_date, $end_date, true );
-    
-    $data = array();
-	$bing = array();
-	$msn = array();
-	$yahoo = array();
-	$google = array();
-	foreach( $range as $date )
-	{
-		$data[] = cd_crt_get_count_for_date( $date, $crawls );
-		$temp = cd_crt_get_bots_for_date( $date, $crawls );
-		$bing[] = $temp['bing'];
-		$msn[] = $temp['msn'];
-		$yahoo[] = $temp['yahoo'];
-		$google[] = $temp['google'];
-	}
-    
     echo json_encode( array(
         'dates'     => $range,
-        'totals'    => $data,
-        'bing'      => $bing,
-        'google'    => $google,
-        'yahoo'     => $yahoo,
-        'msn'       => $msn
+        'totals'    => cd_crt_get_count_for_bot( $start_date, $end_date ),
+        'bing'      => cd_crt_get_count_for_bot( $start_date, $end_date, 'bingbot' ),
+        'google'    => cd_crt_get_count_for_bot( $start_date, $end_date, 'googlebot' ),
+        'yahoo'     => cd_crt_get_count_for_bot( $start_date, $end_date, 'yahoo' ),
+        'msn'       => cd_crt_get_count_for_bot( $start_date, $end_date, 'msnbot' )
     ) );
     die();
 }
