@@ -72,6 +72,14 @@ function cd_crt_enqueue_scripts()
 		CDCRT_VERSION,
 		true
 	);
+    
+    wp_localize_script(
+        'crawlratejs',
+        'crawlrate_data',
+        array(
+            'loader'    => CDCRT_URL . 'images/loader.gif'
+        )
+    );
 }
 
 /**
@@ -108,7 +116,6 @@ function cd_crt_crawl_rate_page_cb()
 		<h2><?php _e( 'Crawl Rate Tracker', 'cdcrt' ); ?></h2>
 		
 		<div id="crt-chart-container">
-			
 		</div>
 		
 		<div id="cd-crt-chart-controller-container" class="hide-if-no-js">

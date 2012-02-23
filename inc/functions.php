@@ -232,12 +232,23 @@ function cd_crt_get_count_for_date( $date, $data = array(), $to_db = false )
 	return absint( $count );
 }
 
+
+/**
+ * Utility function meant to be `array_map`ed to return results from the
+ * DB
+ */
 function cd_crt_extract_crawls( $result_row )
 {
     return $result_row->crawl_count;
 }
 
-
+/**
+ * Fetch the count of visits from a given bot grouped by day.
+ * 
+ * @uses $wpdb->prepare to sanitize all the things
+ * @uses $wpdb->get_result to fetch the database
+ * @return array
+ */
 function cd_crt_get_count_for_bot( $start_date, $end_date, $bot = False )
 {
     global $wpdb;

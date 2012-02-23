@@ -1,3 +1,8 @@
+function cd_crt_show_loader() {
+    jQuery('#crt-chart-container').html('<div class="cd-crt-loader"><img src="' + crawlrate_data.loader + '" /></div>');
+}
+
+
 function cd_crt_fetch_data(args) {
     var a = typeof(args) != 'undefined' ? args : {};
     a.action = 'cd_crt_fetch_data';
@@ -42,10 +47,12 @@ jQuery(document).ready(function(){
 		if( end_date = jQuery('input#cd-crt-end-date').val() )
 			data.end_date = end_date;
 		
+        cd_crt_show_loader();
 		cd_crt_fetch_data(data);
 		e.preventDefault();
 	});
 	jQuery('input#cd-crt-start-date').datepicker({dateFormat: 'yy-mm-dd'});
 	jQuery('input#cd-crt-end-date').datepicker({dateFormat: 'yy-mm-dd'});
+    cd_crt_show_loader();
     cd_crt_fetch_data();
 });
