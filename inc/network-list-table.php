@@ -42,12 +42,6 @@ class CD_Network_Crawl_Rate_List_Table extends CD_Crawl_Rate_List_Table
 	function column_blog( $item )
 	{
 		$blog = get_blog_details( $item->blog_id );
-		$link = sprintf( 
-			'<a href="%s">%s</a>',
-			esc_url( add_query_arg( 'blog_id', $item->blog_id, $this->current_url ) ),
-			esc_html( $blog->blogname )
-		);
-		return $link;
+		return $blog->blogname;
 	}
-	
 }

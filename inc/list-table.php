@@ -77,21 +77,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	 */
 	function extra_tablenav( $which )
 	{
-		$filters = array( 
-			'bot' 		=> __( ' Search Bot = %s', 'cdcrt' ),
-			'uri'		=> __( ' URL = %s', 'cdcrt' ),
-			'type' 		=> __( ' Type = %s', 'cdcrt' ),
-			'object_id'	=> __( ' Object ID = %s', 'cdcrt' )
-		);
 		$current_filter = '';
-		foreach( array_keys( $filters ) as $f )
-		{
-			if( isset( $_GET[$f] ) && $_GET[$f] )
-			{
-				$current_filter .= sprintf( $filters[$f], $_GET[$f] );
-			}
-		}
-		
 		$orders = array( 
 			'user_agent' 	=> 'bot', 
 			'uri' 			=> 'uri', 
@@ -184,12 +170,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	 */
 	function column_uri( $item )
 	{
-		$link = sprintf(
-			'<a href="%s">%s</a>',
-			esc_url( add_query_arg( 'uri', urlencode( $item->uri ), $this->current_url ) ),
-			$item->uri
-		);
-		return $link;
+		return $item->uri;
 	}
 	
 	/**
@@ -199,12 +180,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	 */
 	function column_type( $item )
 	{
-		$link = sprintf(
-			'<a href="%s">%s</a>',
-			esc_url( add_query_arg( 'type', $item->object_type, $this->current_url ) ),
-			cd_crt_get_type_translated( $item->object_type )
-		);
-		return $link;
+		return cd_crt_get_type_translated( $item->object_type );
 	}
 	
 	/**
@@ -214,40 +190,26 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	 */
 	function column_page( $item )
 	{
-		$link = false;
-		$label = '';
+        $label = __( 'n/a', 'cdcrt' );
 		if( in_array( $item->object_type, get_post_types() ) )
 		{
-			$link = add_query_arg( 'type', $item->object_type, $this->current_url );
-			$link = add_query_arg( 'object_id', $item->object_id, $link );
 			$label = get_the_title( $item->object_id );
 		}
 		elseif( in_array( $item->object_type, get_taxonomies() ) )
 		{
-			$link = add_query_arg( 'type', $item->object_type, $this->current_url );
-			$link = add_query_arg( 'object_id', $item->object_id, $link );
 			$term = get_term( $item->object_id, $item->object_type );
-			$label =  $term->name;
+            if( $term )
+            {
+                $label =  $term->name;
+            }
 		}
 		elseif( 'author' == $item->object_type )
 		{
 			$user = get_user_by( 'id', $item->object_id );
-			$link = add_query_arg( 'object_id', $item->object_id, $link );
 			$label = $user->display_name;
 		}
-		else
-		{
-			$label = __( 'n/a', 'cdcrt' );
-		}
-		
-		if( $link )
-		{
-			return sprintf( '<a href="%s">%s</a>', esc_url( $link ), esc_html( $label ) );
-		}
-		else
-		{
-			return $label;
-		}
+
+        return $label;
 	}
 	
 	/**
@@ -257,12 +219,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	 */
 	function column_bot( $item )
 	{
-		$link = sprintf(
-			'<a href="%s">%s</a>',
-			esc_url( add_query_arg( 'bot', urlencode( $item->user_agent ), $this->current_url ) ),
-			cd_crt_get_bot_translated( $item->user_agent )
-		);
-		return $link;
+        return cd_crt_get_bot_translated( $item->user_agent );
 	}
 	
 	/**
