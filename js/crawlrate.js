@@ -43,7 +43,8 @@ function cd_crt_build_single(location, data, range) {
             units: ' Crawls',
             status_bar: true,
             height: 450,
-            width: 800
+            width: 800,
+            curve_amount: 0,
         }
     );
 }
