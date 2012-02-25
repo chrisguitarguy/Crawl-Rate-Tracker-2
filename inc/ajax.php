@@ -30,13 +30,24 @@ function cd_crt_ajax_fetch_data()
     }
     
 	$range = cd_crt_make_date_rage( $start_date, $end_date, true );
-    echo json_encode( array(
+    
+    $rv = array(
         'dates'     => $range,
         'totals'    => cd_crt_get_count_for_bot( $start_date, $end_date ),
         'bing'      => cd_crt_get_count_for_bot( $start_date, $end_date, 'bingbot' ),
         'google'    => cd_crt_get_count_for_bot( $start_date, $end_date, 'googlebot' ),
         'yahoo'     => cd_crt_get_count_for_bot( $start_date, $end_date, 'yahoo' ),
         'msn'       => cd_crt_get_count_for_bot( $start_date, $end_date, 'msnbot' )
-    ) );
+    );
+    
+    foreach( array( 'totals', 'bing', 'google', 'yahoo', 'msn' ) as $bot ) 
+    {
+        while( count( $rv[$bot] ) < count( $range ) )
+        {
+            $rv[$bot][] = '0';
+        }
+    }
+    
+    echo json_encode( $rv );
     die();
 }

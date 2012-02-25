@@ -1,9 +1,7 @@
-function cd_crt_show_loader() {
-    jQuery('#crt-chart-container').html('<div class="cd-crt-loader"><img src="' + crawlrate_data.loader + '" /></div>');
-}
-
 function cd_crt_show_error() {
-    jQuery('#crt-chart-container').html('<div class="cd-crt-loader"><p>Something terrible happened. Reload this page to try again.</p></div>');
+    jQuery('#crt-chart-container .cd-crt-loader')
+        .html('<p>Something terrible happened. Reload this page to try again.</p>')
+        .show();
 }
 
 function cd_crt_fetch_data(args) {
@@ -18,33 +16,41 @@ function cd_crt_fetch_data(args) {
                 cd_crt_show_error();
                 return;
             }
+            jQuery('.cd-crt-loader').hide();
             rv = jQuery.parseJSON(resp);
-            jQuery('#crt-chart-container').html('');
-            cd_crt_build_chart(rv);
+            cd_crt_build_charts(rv);
         }
     );
     return rv;
 }
 
-function cd_crt_build_chart(data) {
+function cd_crt_build_charts(data) {
+    var range = data.dates;
+    delete data.dates;
+    jQuery.each(data, function(key, val) {
+        cd_crt_build_single('crt-' + key, val, range);
+    });
+}
+
+function cd_crt_build_single(location, data, range) {
     new Ico.LineGraph(
-        'crt-chart-container',
-        [
-            data.totals,
-            data.google,
-            data.bing,
-            data.yahoo,
-            data.msn
-        ],
+        location,
+        [data],
         {
-            colors: ['#FF0000', '#1111CC', '#F76120', '#7B0099', '#009AD9'],
-            x_padding_right: 60,
-            labels: {values: data.dates, angle: 90},
+            colors: ['#1111CC'],
+            labels: {values: range, angle: 90},
             grid: true,
             units: ' Crawls',
-            status_bar: true
+            status_bar: true,
+            height: 400,
+            width: 800
         }
     );
+}
+
+function cd_crt_reset_tabs() {
+    jQuery('.cd-crt-tab-container').hide();
+    jQuery('#crt-totals-container').show();
 }
 
 jQuery(document).ready(function(){
@@ -54,13 +60,23 @@ jQuery(document).ready(function(){
 			data.start_date = start_date;
 		if( end_date = jQuery('input#cd-crt-end-date').val() )
 			data.end_date = end_date;
-		
-        cd_crt_show_loader();
+		jQuery('.cd-crt-tab').each(function() { jQuery(this).html('') });
+        jQuery('.cd-crt-loader').show();
 		cd_crt_fetch_data(data);
+        cd_crt_reset_tabs();
 		e.preventDefault();
 	});
+    jQuery('#crt-chart-container .nav-tab').click(function(e) {
+        var id = jQuery(this).attr('rel');
+        jQuery('#crt-chart-container .nav-tab').removeClass('nav-tab-active');
+        jQuery(this).addClass('nav-tab-active');
+        jQuery('.cd-crt-tab-container').hide();
+        jQuery('#' + id + '-container').show();
+        e.preventDefault();
+        return false;
+    });
 	jQuery('input#cd-crt-start-date').datepicker({dateFormat: 'yy-mm-dd'});
 	jQuery('input#cd-crt-end-date').datepicker({dateFormat: 'yy-mm-dd'});
-    cd_crt_show_loader();
     cd_crt_fetch_data();
+    cd_crt_reset_tabs();
 });

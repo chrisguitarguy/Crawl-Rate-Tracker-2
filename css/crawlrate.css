@@ -2,6 +2,8 @@ div#crt-chart-container {
 	width:800px; 
 	margin: 0 auto; 
 	height:500px;
+    position:relative;
+    overflow:hidden;
 }
 
 div#cd-crt-chart-controller {
@@ -21,6 +23,23 @@ div#cd-crt-chart-controller label {
 div#crt-chart-container .cd-crt-loader {
     text-align:center;
     padding-top:200px;
+    width:100%;
+    position:absolute;
+    top: 27px;
+    left: 0;
+    z-index:10000;
+}
+
+div#crt-chart-container .cd-crt-tab {
+    width:800px;
+}
+
+div#crt-chart-container .cd-crt-tab-container {
+    display:none;
+}
+
+div#crt-chart-container #crt-totals-container {
+    display:block;
 }
 
 /*

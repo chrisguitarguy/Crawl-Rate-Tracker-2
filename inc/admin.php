@@ -97,6 +97,7 @@ function cd_crt_enqueue_styles()
 		CDCRT_VERSION,
 		'all'
 	);
+    
 	wp_enqueue_style( 'wp-jquery-ui-dialog' );
 }
 
@@ -108,7 +109,6 @@ function cd_crt_enqueue_styles()
  */
 function cd_crt_crawl_rate_page_cb()
 {
-	global $wpdb;
 	?>
 	<div class="wrap">
 	
@@ -116,7 +116,42 @@ function cd_crt_crawl_rate_page_cb()
 		
 		<h2><?php _e( 'Crawl Rate Tracker', 'cdcrt' ); ?></h2>
 		
-		<div id="crt-chart-container">
+		<div id="crt-chart-container" class="hide-if-no-js">
+            <h3 class="nav-tab-wrapper">
+                <a class="nav-tab nav-tab-active" href="#" rel="crt-totals">Total</a>
+                <a class="nav-tab" href="#" rel="crt-google">Google</a>
+                <a class="nav-tab" href="#" rel="crt-bing">Bing</a>
+                <a class="nav-tab" href="#" rel="crt-yahoo">Yahoo</a>
+                <a class="nav-tab" href="#" rel="crt-msn">MSN</a>
+            </h3>
+            <div class="cd-crt-loader">
+                <img src="<?php echo CDCRT_URL; ?>images/loader.gif" alt="loader" />
+            </div>
+            <div class="cd-crt-tab-container" id="crt-totals-container">
+                <div class="cd-crt-tab" id="crt-totals">
+                
+                </div>
+            </div>
+            <div class="cd-crt-tab-container" id="crt-google-container">
+                <div class="cd-crt-tab" id="crt-google">
+                
+                </div>
+            </div>
+            <div class="cd-crt-tab-container" id="crt-bing-container">
+                <div class="cd-crt-tab" id="crt-bing">
+                
+                </div>
+            </div>
+            <div class="cd-crt-tab-container" id="crt-yahoo-container">
+                <div class="cd-crt-tab" id="crt-yahoo">
+                
+                </div>
+            </div>
+            <div class="cd-crt-tab-container" id="crt-msn-container">
+                <div class="cd-crt-tab" id="crt-msn">
+                
+                </div>
+            </div>
 		</div>
 		
 		<div id="cd-crt-chart-controller-container" class="hide-if-no-js">
