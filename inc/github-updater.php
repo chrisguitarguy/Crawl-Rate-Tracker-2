@@ -15,7 +15,7 @@ class CD_Crawl_Rate_Github_Updater
 			'api_url' 	=> 'https://api.github.com/repos/chrisguitarguy/Crawl-Rate-Tracker-2/%s',
 			'github'	=> 'https://github.com/chrisguitarguy/Crawl-Rate-Tracker-2/',
 			'requires'	=> '3.3',
-			'tested'	=> '3.3',
+			'tested'	=> '3.3.1',
 		);
 		
 		add_action( 'init', array( &$this, 'setup_data' ) );
