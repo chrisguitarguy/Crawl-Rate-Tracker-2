@@ -35,11 +35,15 @@ div#crt-chart-container .cd-crt-tab {
 }
 
 div#crt-chart-container .cd-crt-tab-container {
-    display:none;
+    width:800px;
+    height:100%;
+    position:absolute;
+    top: 50px;
+    left: 99999px;
 }
 
 div#crt-chart-container #crt-totals-container {
-    display:block;
+    left:0;
 }
 
 /*

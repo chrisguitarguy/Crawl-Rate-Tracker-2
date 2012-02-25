@@ -42,20 +42,16 @@ function cd_crt_build_single(location, data, range) {
             grid: true,
             units: ' Crawls',
             status_bar: true,
-            height: 400,
+            height: 450,
             width: 800
         }
     );
 }
 
-function cd_crt_reset_tabs() {
-    jQuery('.cd-crt-tab-container').hide();
-    jQuery('#crt-totals-container').show();
-}
-
 jQuery(document).ready(function(){
 	jQuery('a#crt-reload-graph').click(function(e){
         data = {};
+        jQuery('.cd-crt-tab-container').css('left', '99999px').first().css('left', '0');
 		if( start_date = jQuery('input#cd-crt-start-date').val() )
 			data.start_date = start_date;
 		if( end_date = jQuery('input#cd-crt-end-date').val() )
@@ -63,20 +59,18 @@ jQuery(document).ready(function(){
 		jQuery('.cd-crt-tab').each(function() { jQuery(this).html('') });
         jQuery('.cd-crt-loader').show();
 		cd_crt_fetch_data(data);
-        cd_crt_reset_tabs();
 		e.preventDefault();
 	});
     jQuery('#crt-chart-container .nav-tab').click(function(e) {
         var id = jQuery(this).attr('rel');
         jQuery('#crt-chart-container .nav-tab').removeClass('nav-tab-active');
         jQuery(this).addClass('nav-tab-active');
-        jQuery('.cd-crt-tab-container').hide();
-        jQuery('#' + id + '-container').show();
+        jQuery('.cd-crt-tab-container').css('left', '99999px');
+        jQuery('#' + id + '-container').css('left', '0');
         e.preventDefault();
         return false;
     });
 	jQuery('input#cd-crt-start-date').datepicker({dateFormat: 'yy-mm-dd'});
 	jQuery('input#cd-crt-end-date').datepicker({dateFormat: 'yy-mm-dd'});
     cd_crt_fetch_data();
-    cd_crt_reset_tabs();
 });
