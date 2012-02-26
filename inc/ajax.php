@@ -23,7 +23,7 @@ function cd_crt_ajax_fetch_data()
     
     if( isset( $_POST['start_date'] ) && $_POST['start_date'] )
     {
-        $start_date = date('Y-m-d', strtotime( $_POST['start_date'] ) );
+        $start_date = gmdate('Y-m-d', strtotime( $_POST['start_date'] ) + 86400  );
     }
     else
     {
@@ -32,25 +32,27 @@ function cd_crt_ajax_fetch_data()
 
     if( isset( $_POST['end_date'] ) && $_POST['end_date'] )
     {
-        $end_date = date( 'Y-m-d', strtotime( $_POST['end_date'] ) );
+        $end_date = gmdate( 'Y-m-d', strtotime( $_POST['end_date'] ) + 86400 );
     }
     else 
     {
-        $end_date = date( 'Y-m-d');
+        $end_date = date( 'Y-m-d' );
     }
     
 	$range = cd_crt_make_date_rage( $start_date, $end_date, true );
+    $start = $range[0];
+    $end = $range[count($range)-1];
     
     $rv = array(
         'dates'     => $range,
-        'totals'    => cd_crt_get_count_for_bot( $start_date, $end_date )
+        'totals'    => cd_crt_get_count_for_bot( $start, $end )
     );
     
     $rv['totals'] = cd_crt_extract_crawls( $range, $rv['totals'] );
     
     foreach( cd_crt_get_bots( true ) as $bot ) 
     {
-        $tmp = cd_crt_get_count_for_bot( $start_date, $end_date, $bot );
+        $tmp = cd_crt_get_count_for_bot( $start, $end, $bot );
         $rv[$bot] = cd_crt_extract_crawls( $range, $tmp );
     }
     
