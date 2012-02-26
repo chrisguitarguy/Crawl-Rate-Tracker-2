@@ -62,6 +62,7 @@ jQuery(document).ready(function(){
 		cd_crt_fetch_data(data);
 		e.preventDefault();
 	});
+    
     jQuery('#crt-chart-container .nav-tab').click(function(e) {
         var id = jQuery(this).attr('rel');
         jQuery('#crt-chart-container .nav-tab').removeClass('nav-tab-active');
@@ -71,6 +72,7 @@ jQuery(document).ready(function(){
         e.preventDefault();
         return false;
     });
+    
 	jQuery('input#cd-crt-start-date').datepicker({dateFormat: 'yy-mm-dd'});
 	jQuery('input#cd-crt-end-date').datepicker({dateFormat: 'yy-mm-dd'});
     cd_crt_fetch_data();
