@@ -3,7 +3,7 @@
 Plugin Name: Crawl Rater Tracker 2
 Plugin URI: http://www.christopherguitar.net/
 Description: An updated, enhanced version of Crawl Rate Tracker.
-Version: 0.5
+Version: 0.5.2
 Author: Christopher Davis
 Author URI: http://pmg.co/people/chris
 License: GPL2
@@ -24,7 +24,7 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define( 'CDCRT_VERSION', '0.5' );
+define( 'CDCRT_VERSION', '0.5.2' );
 define( 'CDCRT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'CDCRT_URL', plugin_dir_url( __FILE__ ) );
 define( 'CDCRT_NAME', plugin_basename( __FILE__ ) );
