@@ -69,7 +69,7 @@ In the same way, you can add bots.  Use the regex that will match the bot's user
         return $bots;
     }
 
-The plugin will take care of the rest.  [This](http://www.useragentstring.com/) is a good site to identify the variosu user agent strings.  This means, of course, that you could use this plugin to track things like browser usage.  That's probably not a great idea -- Google Analytics does that for you anyway.
+The plugin will take care of the rest.  [This](http://www.useragentstring.com/) is a good site to identify the various user agent strings.  This means, of course, that you could use this plugin to track things like browser usage.  That's probably not a great idea -- Google Analytics does that for you anyway.
 
 License
 -------
