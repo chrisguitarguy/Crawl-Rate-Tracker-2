@@ -36,7 +36,7 @@ function cd_crt_ajax_fetch_data()
     }
     else 
     {
-        $end_date = gmdate( 'Y-m-d' );
+        $end_date = gmdate( 'Y-m-d', strtotime( '+1 day' ) );
     }
     
 	$range = cd_crt_make_date_rage( $start_date, $end_date, true );

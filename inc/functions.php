@@ -291,7 +291,9 @@ function cd_crt_get_type_translated( $item )
         'archive'				=> __( 'Date Archive', 'cdcrt' ),
         'error'					=> __( 'Error Page (404)', 'cdcrt' ),
         'search'				=> __( 'Search Page', 'cdcrt' ),
-        'undefined'				=> __( 'Who Knows?', 'cdcrt' )
+        'undefined'				=> __( 'Who Knows?', 'cdcrt' ),
+        'feed'                  => __( 'RSS Feed', 'cdcrt' ),
+        'robots'                => __( 'Robots.txt File', 'cdcrt' )
     );
 
     if( isset( $labels[$item] ) )
@@ -344,10 +346,13 @@ function cd_crt_get_bot_translated( $bot )
 function cd_crt_get_bots( $keys_only = false )
 {
     $rv = array(
-        'googlebot' => __( 'Google', 'cdcrt' ),
-        'bingbot'   => __( 'Bing', 'cdcrt' ),
-        'yahoo'     => __( 'Yahoo!', 'cdcrt' ),
-        'msnbot'    => __( 'MSN', 'cdcrt' )
+        'googlebot'     => __( 'Google', 'cdcrt' ),
+        'bingbot'       => __( 'Bing', 'cdcrt' ),
+        'yahoo'         => __( 'Yahoo!', 'cdcrt' ),
+        'msnbot'        => __( 'MSN', 'cdcrt' ),
+        'duckduckbot'   => __( 'Duck Duck Go', 'cdcrt' ),
+        'yandexbot'     => __( 'Yandex', 'cdcrt' ),
+        'baiduspider'   => __( 'Baidu', 'cdcrt' )
     );
     
     $rv = apply_filters( 'cd_crt_bots', $rv );
