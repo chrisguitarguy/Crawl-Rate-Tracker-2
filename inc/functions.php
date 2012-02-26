@@ -350,6 +350,7 @@ function cd_crt_get_bots( $keys_only = false )
         'bingbot'       => __( 'Bing', 'cdcrt' ),
         'yahoo'         => __( 'Yahoo!', 'cdcrt' ),
         'msnbot'        => __( 'MSN', 'cdcrt' ),
+        'scoutjet'      => __( 'blekko', 'cdcrt' ),
         'duckduckbot'   => __( 'Duck Duck Go', 'cdcrt' ),
         'yandexbot'     => __( 'Yandex', 'cdcrt' ),
         'baiduspider'   => __( 'Baidu', 'cdcrt' )
