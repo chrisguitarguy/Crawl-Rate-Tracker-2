@@ -27,7 +27,7 @@ function cd_crt_ajax_fetch_data()
     }
     else
     {
-        $start_date = date( 'Y-m-d', strtotime('-30 days' ) );
+        $start_date = gmdate( 'Y-m-d', strtotime('-30 days' ) );
     }
 
     if( isset( $_POST['end_date'] ) && $_POST['end_date'] )
@@ -36,7 +36,7 @@ function cd_crt_ajax_fetch_data()
     }
     else 
     {
-        $end_date = date( 'Y-m-d' );
+        $end_date = gmdate( 'Y-m-d' );
     }
     
 	$range = cd_crt_make_date_rage( $start_date, $end_date, true );
