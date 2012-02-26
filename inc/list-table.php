@@ -45,15 +45,8 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 		$q['limit'] = 1000;
 		
 		$page = $this->get_pagenum();
-		if( 1 != $page )
-		{
-			$offset = $page * $this->per_page;
-		}
-		else
-		{
-			$offset = 0;
-		}
-		
+        $offset = ($page - 1) * $this->per_page;
+        
 		$this->all_items = cd_crt_get_crawls( $q );
 		
 		$this->total = count( $this->all_items );
