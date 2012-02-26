@@ -8,7 +8,7 @@ Author: Christopher Davis
 Author URI: http://pmg.co/people/chris
 License: GPL2
 
-	Copyright 2011 Christopher Davis  (email: chris@classicalguitar.org)
+    Copyright 2011 Christopher Davis  (email: chris@classicalguitar.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -56,9 +56,10 @@ add_action( 'shutdown', 'cd_crt_count_bot' );
 function cd_crt_count_bot()
 {
 	$agent = $_SERVER['HTTP_USER_AGENT'] ? $_SERVER['HTTP_USER_AGENT'] : false;
-	
 	if( ! $agent ) return;
-	if( preg_match( '/(googlebot|bingbot|yahoo|msnbot)/i', $agent, $matches ) )
+    
+    $bots = cd_crt_get_bots( true );
+	if( preg_match( '#(' . implode( '|', $bots ) . ')#i', $agent, $matches ) )
 	{
 		$obj = get_queried_object();
 		

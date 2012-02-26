@@ -6,6 +6,13 @@
  * @subpackage Crawl Rate Tracker 2
  */
 
+
+/**
+ * Query the crawl rate table and fetch some bots
+ * 
+ * @since 0.1
+ * @return array The result of the Query
+ */
 function cd_crt_get_crawls( $args, $count = false )
 {
 	global $wpdb, $blog_id;
@@ -30,7 +37,7 @@ function cd_crt_get_crawls( $args, $count = false )
 	);
 	
 	$query = " FROM {$table}";
-	if( in_array( $q['bot'], array( 'msnbot', 'bingbot', 'googlebot', 'yahoo' ) ) )
+	if( in_array( $q['bot'], cd_crt_get_bots( true ) ) )
 	{
 		$bot = $wpdb->prepare( "user_agent = %s", $q['bot'] );
 	}
@@ -184,67 +191,67 @@ function cd_crt_get_crawls( $args, $count = false )
 	return $wpdb->get_results( "Select *" . $query, OBJECT );
 }
 
+
+/**
+ * Return the name of the database table
+ * 
+ * @since 0.1
+ * @return string
+ */
 function cd_crt_get_table()
 {
 	global $wpdb;
 	return sprintf( '%scd_crawl_rate', $wpdb->base_prefix );
 }
 
+
+/**
+ * Make a range of dates going from $start to $end
+ * 
+ * @since 0.1
+ * @return array A list of dates
+ */
 function cd_crt_make_date_rage( $start, $end, $convert = true )
 {
-	if( $convert )
-	{
-		$start = strtotime( $start );
-		$end = strtotime( $end );
-	}
-	
-	$out = array( date( 'Y-m-d', $start ) );
-	
-	$t = $start + 86400;
-	while( $t <= $end )
-	{
-		$out[] = date( 'Y-m-d', $t );
-		$t += 86400;
-	}
-	return $out;
-}
+    if( $convert )
+    {
+        $start = strtotime( $start );
+        $end = strtotime( $end );
+    }
 
-function cd_crt_get_count_for_date( $date, $data = array(), $to_db = false )
-{
-	if( $to_db )
-	{
-		global $wpdb;
-		return $wpdb->get_var(
-			$wpdb->pepare(
-				"SELECT count(*) WHERE crawl_date = %s", 
-				$date
-			)
-		);
-	}
-	$count = 0;
-	foreach( $data as $item )
-	{
-		if( $date == $item->crawl_date )
-		{
-			$count += 1;
-		}
-	}
-	return absint( $count );
+    $out = array( date( 'Y-m-d', $start ) );
+
+    $t = $start + 86400;
+    while( $t <= $end )
+    {
+        $out[] = date( 'Y-m-d', $t );
+        $t += 86400;
+    }
+    return $out;
 }
 
 
 /**
- * Utility function meant to be `array_map`ed to return results from the
- * DB
+ * Loops through an array of datas and finds the value of 
+ * 
+ * @since 0.4
+ * @return string|int The crawl count
  */
-function cd_crt_extract_crawls( $result_row )
+function cd_crt_extract_crawls( $dates, $data )
 {
-    return $result_row->crawl_count;
+    $rv = array();
+    foreach( $dates as $date )
+    {
+        $rv[] = isset( $data[$date] ) ? $data[$date]->crawl_count : '0';
+    }
+    return $rv;
 }
+
 
 /**
  * Fetch the count of visits from a given bot grouped by day.
  * 
+ * @since 0.4
  * @uses $wpdb->prepare to sanitize all the things
  * @uses $wpdb->get_result to fetch the database
  * @return array
@@ -260,9 +267,10 @@ function cd_crt_get_count_for_bot( $start_date, $end_date, $bot = False )
         $query .= $wpdb->prepare( ' AND user_agent = %s', $bot );
     }
     $query .= ' GROUP BY crawl_date ORDER BY crawl_date ASC;';
-    $result = $wpdb->get_results( $query );
-    return array_map( 'cd_crt_extract_crawls', $result );
+    $result = $wpdb->get_results( $query, OBJECT_K );
+    return $result;
 }
+
 
 /**
  * Returns a translated string version of the object_type database field
@@ -301,27 +309,51 @@ function cd_crt_get_type_translated( $item )
 	return '';
 }
 
+
 /**
  * Return a translated string version of user_agent from the database
  * 
  * @since 0.2
+ * @return string The translated bot string
  */
 function cd_crt_get_bot_translated( $bot )
 {
-	switch( $bot )
-	{
-		case 'googlebot':
-			return __( 'Google', 'cdcrt' );
-			break;
-		case 'msnbot':
-			return __( 'MSN', 'cdcrt' );
-			break;
-		case 'yahoo':
-			return __( 'Yahoo!', 'cdcrt' );
-			break;
-		case 'bingbot':
-			return __( 'Bing', 'cdcrt' );
-			break;
-	}
+	$bots = cd_crt_get_bots();
+    if( isset( $bots[$bot] ) )
+    {
+        return $bots[$bot];
+    }
 	return '';
+}
+
+
+/**
+ * Get the list of allowed bots.  This is used anywhere we're going to 
+ * loop through bots or figure out which ones to track.
+ * 
+ *      'botregex' => __( 'Translated Bot Label', 'cdcrt' )
+ * 
+ * @since 0.5
+ * @uses apply_filters Calls cd_crt_bots before returning the bot list
+ * @return array List of the bots
+ */
+function cd_crt_get_bots( $keys_only = false )
+{
+    $rv = array(
+        'googlebot' => __( 'Google', 'cdcrt' ),
+        'bingbot'   => __( 'Bing', 'cdcrt' ),
+        'yahoo'     => __( 'Yahoo!', 'cdcrt' ),
+        'msnbot'    => __( 'MSN', 'cdcrt' )
+    );
+    
+    $rv = apply_filters( 'cd_crt_bots', $rv );
+    
+    if( $keys_only )
+    {
+        return array_keys( $rv );
+    }
+    else
+    {
+        return $rv;
+    }
 }

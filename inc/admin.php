@@ -119,10 +119,9 @@ function cd_crt_crawl_rate_page_cb()
 		<div id="crt-chart-container" class="hide-if-no-js">
             <h3 class="nav-tab-wrapper">
                 <a class="nav-tab nav-tab-active" href="#" rel="crt-totals">Total</a>
-                <a class="nav-tab" href="#" rel="crt-google">Google</a>
-                <a class="nav-tab" href="#" rel="crt-bing">Bing</a>
-                <a class="nav-tab" href="#" rel="crt-yahoo">Yahoo</a>
-                <a class="nav-tab" href="#" rel="crt-msn">MSN</a>
+                <?php foreach( cd_crt_get_bots() as $bot => $trans ): ?>
+                    <a class="nav-tab" href="#" rel="crt-<?php echo esc_attr( $bot ); ?>"><?php echo esc_html( $trans ); ?></a>
+                <?php endforeach; ?>
             </h3>
             <div class="cd-crt-tab-holder">
                 <div class="cd-crt-loader">
@@ -131,18 +130,11 @@ function cd_crt_crawl_rate_page_cb()
                 <div class="cd-crt-tab" id="crt-totals">
                 
                 </div>
-                <div class="cd-crt-tab" id="crt-google">
-                
-                </div>
-                <div class="cd-crt-tab" id="crt-bing">
-                
-                </div>
-                <div class="cd-crt-tab" id="crt-yahoo">
-                
-                </div>
-                <div class="cd-crt-tab" id="crt-msn">
-                
-                </div>
+                <?php foreach( cd_crt_get_bots( true ) as $bot ): ?>
+                    <div class="cd-crt-tab" id="crt-<?php echo esc_attr( $bot ); ?>">
+                        
+                    </div>
+                <?php endforeach; ?>
             </div>
 		</div>
 		

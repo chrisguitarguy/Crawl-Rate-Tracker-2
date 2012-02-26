@@ -33,19 +33,15 @@ function cd_crt_ajax_fetch_data()
     
     $rv = array(
         'dates'     => $range,
-        'totals'    => cd_crt_get_count_for_bot( $start_date, $end_date ),
-        'bing'      => cd_crt_get_count_for_bot( $start_date, $end_date, 'bingbot' ),
-        'google'    => cd_crt_get_count_for_bot( $start_date, $end_date, 'googlebot' ),
-        'yahoo'     => cd_crt_get_count_for_bot( $start_date, $end_date, 'yahoo' ),
-        'msn'       => cd_crt_get_count_for_bot( $start_date, $end_date, 'msnbot' )
+        'totals'    => cd_crt_get_count_for_bot( $start_date, $end_date )
     );
     
-    foreach( array( 'totals', 'bing', 'google', 'yahoo', 'msn' ) as $bot ) 
+    $rv['totals'] = cd_crt_extract_crawls( $range, $rv['totals'] );
+    
+    foreach( cd_crt_get_bots( true ) as $bot ) 
     {
-        while( count( $rv[$bot] ) < count( $range ) )
-        {
-            $rv[$bot][] = '0';
-        }
+        $tmp = cd_crt_get_count_for_bot( $start_date, $end_date, $bot );
+        $rv[$bot] = cd_crt_extract_crawls( $range, $tmp );
     }
     
     echo json_encode( $rv );
