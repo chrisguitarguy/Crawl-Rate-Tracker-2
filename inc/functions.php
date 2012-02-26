@@ -6,7 +6,6 @@
  * @subpackage Crawl Rate Tracker 2
  */
 
-
 /**
  * Query the crawl rate table and fetch some bots
  * 
@@ -15,180 +14,184 @@
  */
 function cd_crt_get_crawls( $args, $count = false )
 {
-	global $wpdb, $blog_id;
-	$table = cd_crt_get_table();
-	$columns = array( 'id', 'object_id', 'blog_id', 'object_type', 'crawl_date', 'user_agent', 'uri' );
-	
-	$q = wp_parse_args(
-		$args,
-		array(
-			'bot'			=> 'any',
-			'start_date'	=> false,
-			'end_date'		=> date( 'Y-m-d' ),
-			'limit'			=> 40,
-			'offset'		=> 0,
-			'type'			=> 'any',
-			'uri'			=> false,
-			'orderby'		=> 'crawl_date',
-			'order'			=> 'DESC',
-			'blog_id'		=> false,
-			'object_id'		=> false
-		)
-	);
-	
-	$query = " FROM {$table}";
-	if( in_array( $q['bot'], cd_crt_get_bots( true ) ) )
-	{
-		$bot = $wpdb->prepare( "user_agent = %s", $q['bot'] );
-	}
-	else
-	{
-		$bot = '';
-	}
-	
-	if( $q['type'] != 'any' )
-	{
-		$type = $wpdb->prepare( "object_type = %s", $q['type'] );
-	}
-	else
-	{
-		$type = '';
-	}
-	
-	if( $q['uri'] )
-	{
-		$uri = $wpdb->prepare( "uri = %s", $q['uri'] );
-	}
-	else
-	{
-		$uri = '';
-	}
-	
-	if( $q['start_date'] )
-	{
-		$date = $wpdb->prepare( "crawl_date BETWEEN %s AND %s", $q['start_date'], $q['end_date'] );
-	}
-	else
-	{
-		$date = '';
-	}
-	
-	if( isset( $q['object_id'] ) && $q['object_id'] )
-	{
-		$oid = $wpdb->prepare( "object_id = %d", $q['object_id'] );
-	}
-	else
-	{
-		$oid = '';
-	}
-	
-	if( function_exists( 'is_multisite' ) && is_multisite() && is_network_admin() )
-	{
-		if( isset( $q['blog_id'] ) && $q['blog_id'] )
-		{
-			$where = $wpdb->prepare( " WHERE blog_id = %d", $q['blog_id'] );
-		}
-		else
-		{
-			$where = "";
-		}
-	}
-	else
-	{
-		$where = $wpdb->prepare( " WHERE blog_id = %d", absint( $blog_id ) );
-	}
+    global $wpdb, $blog_id;
+    $table = cd_crt_get_table();
+    $columns = array( 'id', 'object_id', 'blog_id', 'object_type', 'crawl_date', 'user_agent', 'uri' );
 
-	if( $bot )
-	{
-		if( $where )
-		{
-			$where .= ' AND ' . $bot;
-		}
-		else
-		{
-			$where = ' WHERE ' . $bot;
-		}
-	}
-	if( $type )
-	{
-		if( $where )
-		{
-			$where .= ' AND ' . $type;
-		}
-		else
-		{
-			$where .= ' WHERE ' . $type;
-		}
-	}
-	if( $uri )
-	{
-		if( $where )
-		{
-			$where .= ' AND ' . $uri;
-		}
-		else
-		{
-			$where .= ' WHERE ' . $uri;
-		}
-	}
-	if( $date )
-	{
-		$where .= ' AND ' . $date;
-	}
-	if( $oid )
-	{
-		if( $where )
-		{
-			$where .= ' AND ' . $oid;
-		}
-		else
-		{
-			$where .= ' WHERE ' . $oid;
-		}
-	}
-	
-	if( 'all' == $q['limit'] )
-	{
-		$limit = '';
-	}
-	elseif( absint( $q['limit'] ) )
-	{
-		$limit = $wpdb->prepare( " LIMIT %d", $q['limit'] );
-	}
-	else
-	{
-		$limit = '';
-	}
-	
-	if( $q['offset'] && $limit )
-	{
-		$offset = $wpdb->prepare( " OFFSET %d", $q['offset'] );
-	}
-	else 
-	{
-		$offset = '';
-	}
-	
-	if( in_array( $q['orderby'], $columns ) )
-	{
-		$orderby = " ORDER BY {$q['orderby']}";
-	}
-	else
-	{
-		$orderby = " ORDER BY crawl_date";
-	}
-	$orderby .= 'asc' == strtolower( $q['order'] ) ? ' ASC ' : ' DESC ';
-	
-	// hack, secondary order by for time
-	$orderby .= ', crawl_time DESC ';
-	
-	$query = $query . $where . $orderby . $limit . $offset . ';';
-	
-	if( $count )
-	{
-		return $wpdb->get_var( "SELECT count(*)" . $query ); 
-	}
-	return $wpdb->get_results( "Select *" . $query, OBJECT );
+    $q = wp_parse_args( $args, array(
+        'bot'			=> 'any',
+        'start_date'	=> false,
+        'end_date'		=> date( 'Y-m-d' ),
+        'limit'			=> 40,
+        'offset'		=> 0,
+        'type'			=> 'any',
+        'uri'			=> false,
+        'orderby'		=> 'crawl_date',
+        'order'			=> 'DESC',
+        'blog_id'		=> false,
+        'object_id'		=> false
+    ) );
+
+    $query = " FROM {$table}";
+    
+    if( in_array( $q['bot'], cd_crt_get_bots( true ) ) )
+    {
+        $bot = $wpdb->prepare( "user_agent = %s", $q['bot'] );
+    }
+    else
+    {
+        $bot = '';
+    }
+
+    if( $q['type'] != 'any' )
+    {
+        $type = $wpdb->prepare( "object_type = %s", $q['type'] );
+    }
+    else
+    {
+        $type = '';
+    }
+
+    if( $q['uri'] )
+    {
+        $uri = $wpdb->prepare( "uri = %s", $q['uri'] );
+    }
+    else
+    {
+        $uri = '';
+    }
+
+    if( $q['start_date'] )
+    {
+        $date = $wpdb->prepare( "crawl_date BETWEEN %s AND %s", $q['start_date'], $q['end_date'] );
+    }
+    else
+    {
+        $date = '';
+    }
+
+    if( isset( $q['object_id'] ) && $q['object_id'] )
+    {
+        $oid = $wpdb->prepare( "object_id = %d", $q['object_id'] );
+    }
+    else
+    {
+        $oid = '';
+    }
+
+    if( function_exists( 'is_multisite' ) && is_multisite() && is_network_admin() )
+    {
+        if( isset( $q['blog_id'] ) && $q['blog_id'] )
+        {
+            $where = $wpdb->prepare( " WHERE blog_id = %d", $q['blog_id'] );
+        }
+        else
+        {
+            $where = "";
+        }
+    }
+    else
+    {
+        $where = $wpdb->prepare( " WHERE blog_id = %d", absint( $blog_id ) );
+    }
+
+    if( $bot )
+    {
+        if( $where )
+        {
+            $where .= ' AND ' . $bot;
+        }
+        else
+        {
+            $where = ' WHERE ' . $bot;
+        }
+    }
+    
+    if( $type )
+    {
+        if( $where )
+        {
+            $where .= ' AND ' . $type;
+        }
+        else
+        {
+            $where .= ' WHERE ' . $type;
+        }
+    }
+    
+    if( $uri )
+    {
+        if( $where )
+        {
+            $where .= ' AND ' . $uri;
+        }
+        else
+        {
+            $where .= ' WHERE ' . $uri;
+        }
+    }
+    
+    if( $date )
+    {
+        $where .= ' AND ' . $date;
+    }
+    
+    if( $oid )
+    {
+        if( $where )
+        {
+            $where .= ' AND ' . $oid;
+        }
+        else
+        {
+            $where .= ' WHERE ' . $oid;
+        }
+    }
+
+    if( 'all' == $q['limit'] )
+    {
+        $limit = '';
+    }
+    elseif( absint( $q['limit'] ) )
+    {
+        $limit = $wpdb->prepare( " LIMIT %d", $q['limit'] );
+    }
+    else
+    {
+        $limit = '';
+    }
+
+    if( $q['offset'] && $limit )
+    {
+        $offset = $wpdb->prepare( " OFFSET %d", $q['offset'] );
+    }
+    else 
+    {
+        $offset = '';
+    }
+
+    if( in_array( $q['orderby'], $columns ) )
+    {
+        $orderby = " ORDER BY {$q['orderby']}";
+    }
+    else
+    {
+        $orderby = " ORDER BY crawl_date";
+    }
+    
+    $orderby .= 'asc' == strtolower( $q['order'] ) ? ' ASC ' : ' DESC ';
+
+    // hack, secondary order by for time
+    $orderby .= ', crawl_time DESC ';
+
+    $query = $query . $where . $orderby . $limit . $offset . ';';
+
+    if( $count )
+    {
+        return $wpdb->get_var( "SELECT count(*)" . $query ); 
+    }
+    
+    return $wpdb->get_results( "Select *" . $query, OBJECT );
 }
 
 
@@ -200,8 +203,8 @@ function cd_crt_get_crawls( $args, $count = false )
  */
 function cd_crt_get_table()
 {
-	global $wpdb;
-	return sprintf( '%scd_crawl_rate', $wpdb->base_prefix );
+    global $wpdb;
+    return sprintf( '%scd_crawl_rate', $wpdb->base_prefix );
 }
 
 
@@ -219,12 +222,12 @@ function cd_crt_make_date_rage( $start, $end, $convert = true )
         $end = strtotime( $end );
     }
 
-    $out = array( date( 'Y-m-d', $start ) );
+    $out = array( gmdate( 'Y-m-d', $start + get_option('gmt_offset')*3600 ) );
 
     $t = $start + 86400;
     while( $t <= $end )
     {
-        $out[] = date( 'Y-m-d', $t );
+        $out[] = gmdate( 'Y-m-d', $t + get_option('gmt_offset')*3600 );
         $t += 86400;
     }
     return $out;
@@ -279,34 +282,35 @@ function cd_crt_get_count_for_bot( $start_date, $end_date, $bot = False )
  */
 function cd_crt_get_type_translated( $item )
 {
-	$labels = array(
-		'front'					=> __( 'Front Page', 'cdcrt' ),
-		'blog'					=> __( 'Blog Page', 'cdcrt' ),
-		'author'				=> __( 'Author Archive', 'cdcrt' ),
-		'post_type_archive'		=> __( 'Post Type Archive', 'cdcrt' ),
-		'archive'				=> __( 'Date Archive', 'cdcrt' ),
-		'error'					=> __( 'Error Page (404)', 'cdcrt' ),
-		'search'				=> __( 'Search Page', 'cdcrt' ),
-		'undefined'				=> __( 'Who Knows?', 'cdcrt' )
-	);
-	
-	if( isset( $labels[$item] ) )
-	{
-		return $labels[$item];
-	}
-	elseif( in_array( $item, get_post_types() ) )
-	{
-		$type = get_post_type_object( $item );
-		$label = isset( $type->label ) && $type->label ? $type->label : $item;
-		return sprintf( __( 'Singular: %s', 'cdcrt' ), $label );
-	}
-	elseif( in_array( $item, get_taxonomies() ) )
-	{
-		$tax = get_taxonomy( $item );
-		$label = isset( $tax->name ) ? $tax->label : $item;
-		return sprintf( __( 'Taxonomy Archive: %s', 'cdcrt' ), $label );
-	}
-	return '';
+    $rv = '';
+    $labels = array(
+        'front'					=> __( 'Front Page', 'cdcrt' ),
+        'blog'					=> __( 'Blog Page', 'cdcrt' ),
+        'author'				=> __( 'Author Archive', 'cdcrt' ),
+        'post_type_archive'		=> __( 'Post Type Archive', 'cdcrt' ),
+        'archive'				=> __( 'Date Archive', 'cdcrt' ),
+        'error'					=> __( 'Error Page (404)', 'cdcrt' ),
+        'search'				=> __( 'Search Page', 'cdcrt' ),
+        'undefined'				=> __( 'Who Knows?', 'cdcrt' )
+    );
+
+    if( isset( $labels[$item] ) )
+    {
+        $rv = $labels[$item];
+    }
+    elseif( in_array( $item, get_post_types() ) )
+    {
+        $type = get_post_type_object( $item );
+        $label = isset( $type->label ) && $type->label ? $type->label : $item;
+        $rv = sprintf( __( 'Singular: %s', 'cdcrt' ), $label );
+    }
+    elseif( in_array( $item, get_taxonomies() ) )
+    {
+        $tax = get_taxonomy( $item );
+        $label = isset( $tax->name ) ? $tax->label : $item;
+        $rv = sprintf( __( 'Taxonomy Archive: %s', 'cdcrt' ), $label );
+    }
+    return $rv;
 }
 
 

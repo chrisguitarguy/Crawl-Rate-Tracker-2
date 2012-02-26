@@ -7,6 +7,16 @@
  */
 
 add_action( 'wp_ajax_cd_crt_fetch_data', 'cd_crt_ajax_fetch_data' );
+/**
+ * Ajax callback to fetch the data for admin page graphs
+ * 
+ * @since 0.2
+ * @uses check_ajax_referer To verify the ajax nonce
+ * @uses cd_crt_make_date_rate To fetch a range of data between a given start and end date
+ * @uses cd_crt_get_count_for_bot To fetch the count for a given bot
+ * @uses cd_crt_extract_crawls To ensure that the dates/values line up
+ * @return null
+ */
 function cd_crt_ajax_fetch_data()
 {
     check_ajax_referer( 'cd_crt_ajax_nonce', 'crt_nonce' );
