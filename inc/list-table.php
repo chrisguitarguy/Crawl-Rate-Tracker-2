@@ -229,7 +229,7 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	 */
 	function column_date( $item )
 	{
-		return get_date_from_gmt( $item->crawl_date . ' ' . $item->crawl_time, get_option( 'date_format' ) );
+		return date( get_option( 'date_format' ), $this->item_time( $item ) );
 	}
 	
 	/**
@@ -239,6 +239,17 @@ class CD_Crawl_Rate_List_Table extends WP_List_Table
 	 */
 	function column_time( $item )
 	{
-		return get_date_from_gmt( $item->crawl_date . ' ' . $item->crawl_time, get_option( 'time_format' ) );
+		return date( get_option( 'time_format' ), $this->item_time( $item ) );
 	}
+    
+    /**
+     * Fetch the timestamp of an item from its crawl_date and crawl_time
+     * 
+     * @access protected
+     * @since 0.5.1
+     */
+    protected function item_time( $item )
+    {
+        return strtotime( $item->crawl_date . ' ' . $item->crawl_time );
+    }
 }

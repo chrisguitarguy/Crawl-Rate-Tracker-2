@@ -23,7 +23,7 @@ function cd_crt_ajax_fetch_data()
     
     if( isset( $_POST['start_date'] ) && $_POST['start_date'] )
     {
-        $start_date = gmdate('Y-m-d', strtotime( $_POST['start_date'] ) + 86400  );
+        $start_date = gmdate('Y-m-d', strtotime( $_POST['start_date'] ) + 86400 );
     }
     else
     {
