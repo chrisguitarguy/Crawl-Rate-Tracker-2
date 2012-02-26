@@ -124,30 +124,22 @@ function cd_crt_crawl_rate_page_cb()
                 <a class="nav-tab" href="#" rel="crt-yahoo">Yahoo</a>
                 <a class="nav-tab" href="#" rel="crt-msn">MSN</a>
             </h3>
-            <div class="cd-crt-loader">
-                <img src="<?php echo CDCRT_URL; ?>images/loader.gif" alt="loader" />
-            </div>
-            <div class="cd-crt-tab-container" id="crt-totals-container">
+            <div class="cd-crt-tab-holder">
+                <div class="cd-crt-loader">
+                    <img src="<?php echo CDCRT_URL; ?>images/loader.gif" alt="loader" />
+                </div>
                 <div class="cd-crt-tab" id="crt-totals">
                 
                 </div>
-            </div>
-            <div class="cd-crt-tab-container" id="crt-google-container">
                 <div class="cd-crt-tab" id="crt-google">
                 
                 </div>
-            </div>
-            <div class="cd-crt-tab-container" id="crt-bing-container">
                 <div class="cd-crt-tab" id="crt-bing">
                 
                 </div>
-            </div>
-            <div class="cd-crt-tab-container" id="crt-yahoo-container">
                 <div class="cd-crt-tab" id="crt-yahoo">
                 
                 </div>
-            </div>
-            <div class="cd-crt-tab-container" id="crt-msn-container">
                 <div class="cd-crt-tab" id="crt-msn">
                 
                 </div>

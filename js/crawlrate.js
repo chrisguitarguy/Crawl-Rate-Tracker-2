@@ -42,8 +42,8 @@ function cd_crt_build_single(location, data, range) {
             grid: true,
             units: ' Crawls',
             status_bar: true,
-            height: 450,
-            width: 800,
+            height: 390,
+            width: 780,
             curve_amount: 0,
         }
     );
@@ -66,8 +66,8 @@ jQuery(document).ready(function(){
         var id = jQuery(this).attr('rel');
         jQuery('#crt-chart-container .nav-tab').removeClass('nav-tab-active');
         jQuery(this).addClass('nav-tab-active');
-        jQuery('.cd-crt-tab-container').css('left', '99999px');
-        jQuery('#' + id + '-container').css('left', '0');
+        jQuery('.cd-crt-tab').css('left', '99999px');
+        jQuery('#' + id).css('left', '10px');
         e.preventDefault();
         return false;
     });

@@ -20,30 +20,43 @@ div#cd-crt-chart-controller label {
 	margin:0 0 0 7px;
 }
 
+div#crt-chart-container h3.nav-tab-wrapper {
+    margin-bottom:0;
+}
+
 div#crt-chart-container .cd-crt-loader {
     text-align:center;
     padding-top:200px;
     width:100%;
     position:absolute;
-    top: 27px;
+    top: 0;
     left: 0;
     z-index:10000;
 }
 
+div#crt-chart-container .cd-crt-tab-holder {
+    border:1px solid #ccc;
+    border-top:none;
+    position:relative;
+    height:400px;
+    -webkit-border-bottom-right-radius:3px;
+    -webkit-border-bottom-left-radius:3px;
+    -moz-border-radius-bottomright:3px;
+    -moz-border-radius-bottomleft:3px;
+    border-bottom-right-radius:3px;
+    border-bottom-left-radius:3px;
+}
+
 div#crt-chart-container .cd-crt-tab {
-    width:800px;
-}
-
-div#crt-chart-container .cd-crt-tab-container {
-    width:800px;
-    height:100%;
+    width:780px;
+    height:400px;
     position:absolute;
-    top: 50px;
-    left: 99999px;
+    top:10px;
+    left:99999px;
 }
 
-div#crt-chart-container #crt-totals-container {
-    left:0;
+div#crt-chart-container #crt-totals {
+    left:10px;
 }
 
 /*
